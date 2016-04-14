@@ -14,17 +14,28 @@ public class RSA {
 		
 		BigInteger primeiroPrimo = new BigInteger("17");
 		BigInteger segundoPrimo = new BigInteger("41");
-		BigInteger tamanhoConjunto = primeiroPrimo.multiply(segundoPrimo);
-		
+		BigInteger tamanhoConjunto = primeiroPrimo.multiply(segundoPrimo);		
 		BigInteger resultadoTotiente = totiente(tamanhoConjunto, primeiroPrimo, segundoPrimo);
+				
+		BigInteger a = new BigInteger("13");
+		BigInteger b = new BigInteger("1");
 		
 		System.out.println(NumLetra.get(19));
 		System.out.println(tamanhoConjunto);
 		System.out.println(resultadoTotiente);
 		System.out.println(resultadoTotiente.gcd(new BigInteger("13")));
-	}
-	
 		
+		if(resultadoTotiente.gcd(a).equals(b)){
+			System.out.println("O MDC é aceitavel para a chave pública");
+		}
+		
+		int e = 13;
+		
+		BigInteger cipherText = (new BigInteger("19").pow(e)).mod(tamanhoConjunto);
+		
+		System.out.println("CipherText: " +cipherText);
+	}
+			
 	//calcula totiente
 	public static BigInteger totiente(BigInteger tamanhoConjunto, BigInteger primeiro, BigInteger segundo){
 		BigInteger num1 = new BigInteger("1");
