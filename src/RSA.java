@@ -1,59 +1,81 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.math.*;
 
 public class RSA {
-	
-	/*Co-primos ou Números primos entre si
-	Dois números são primos entre si quando o Máximo Divisor Comum (MDC) entre eles é 1.*/
-	
+
+	/*
+	 * Co-primos ou Números primos entre si Dois números são primos entre si
+	 * quando o Máximo Divisor Comum (MDC) entre eles é 1.
+	 */
+
+	private static final BigInteger NUM_1 = new BigInteger("1");
+
+	private static final String[] CARACTERES = { "A", "B", "C", "D", "E", "F",
+			"G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+			"U", "V", "W", "X", "Y", "Z"};
+
 	public static void main(String[] args) {
 		
-		Map<Integer, String> NumLetra = geraTabela();
+		Scanner sc = new Scanner(System.in);
+		String plainText = sc.next();
 		
+		Map<String, BigInteger> NumLetra = geraTabela();
+
+		// Variáveis do tipo BigInteger
 		BigInteger primeiroPrimo = new BigInteger("17");
 		BigInteger segundoPrimo = new BigInteger("41");
-		BigInteger tamanhoConjunto = primeiroPrimo.multiply(segundoPrimo);		
-		BigInteger resultadoTotiente = totiente(tamanhoConjunto, primeiroPrimo, segundoPrimo);
-				
-		BigInteger a = new BigInteger("13");
-		BigInteger b = new BigInteger("1");
-		
-		System.out.println(NumLetra.get(19));
-		System.out.println(tamanhoConjunto);
-		System.out.println(resultadoTotiente);
-		System.out.println(resultadoTotiente.gcd(new BigInteger("13")));
-		
-		if(resultadoTotiente.gcd(a).equals(b)){
-			System.out.println("O MDC é aceitavel para a chave pública");
+		BigInteger tamanhoConjunto = primeiroPrimo.multiply(segundoPrimo);
+		BigInteger resultadoTotiente = totiente(primeiroPrimo, segundoPrimo);
+
+		int mdc = calculaMdc(resultadoTotiente);
+
+		// Prints
+		System.out.println(NumLetra.get("T"));
+		System.out.println("Tamanho do conjunto: " + tamanhoConjunto);
+		System.out.println("Totiente: " + resultadoTotiente);
+		System.out.println("MDC: " + mdc);
+
+		BigInteger[] cipherText = new BigInteger[plainText.length()];
+		String letra;
+		for (int i = 0; i < plainText.length(); i++) {
+			letra = plainText.substring(i, i+1).toUpperCase();
+			//System.out.println(Math.pow(NumLetra.get(letra), mdc));
+			cipherText[i] = (new BigInteger(""+NumLetra.get(letra)).pow(mdc)).mod(tamanhoConjunto);
 		}
 		
-		int e = 13;
+		for (BigInteger bigInteger : cipherText) {
+			System.out.println(bigInteger);
+		}
 		
-		BigInteger cipherText = (new BigInteger("19").pow(e)).mod(tamanhoConjunto);
-		
-		System.out.println("CipherText: " +cipherText);
 	}
-			
-	//calcula totiente
-	public static BigInteger totiente(BigInteger tamanhoConjunto, BigInteger primeiro, BigInteger segundo){
-		BigInteger num1 = new BigInteger("1");
-		return (primeiro.subtract(num1)).multiply((segundo.subtract(num1)));
+
+	private static int calculaMdc(BigInteger resultadoTotiente) {
+		int num = 13;
+		BigInteger mdc = resultadoTotiente.gcd(new BigInteger(""+num));
+		while (!mdc.equals(NUM_1)) {
+			mdc = resultadoTotiente.gcd(new BigInteger(""+num));
+			System.out.println(num);
+			num++;
+		}
+		return num;
 	}
-	
-	//Função para gerar a tabela de relação Número-Caracter
-	public static Map<Integer, String> geraTabela() {
-		Map<Integer, String> hashNumLetra = new HashMap<Integer, String>();
-		
-		String[] caracteres = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
-				"J", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-				"W", "X", "Y", "Z", };
+
+	// calcula totiente
+	public static BigInteger totiente(BigInteger primeiro, BigInteger segundo) {
+		// BigInteger num1 = new BigInteger("1");
+		return (primeiro.subtract(NUM_1)).multiply((segundo.subtract(NUM_1)));
+	}
+
+	// Função para gerar a tabela de relação Número-Caracter
+	public static Map<String, BigInteger> geraTabela() {
+		Map<String, BigInteger> hashNumLetra = new HashMap<String, BigInteger>();
 
 		int i = 1;
 
-		for (String caracter : caracteres) {
-			hashNumLetra.put(i, caracter);
+		for (String caracter : CARACTERES) {
+			hashNumLetra.put(caracter, new BigInteger(""+i));
 			i++;
 		}
 
