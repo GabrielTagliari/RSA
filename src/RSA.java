@@ -12,6 +12,7 @@ public class RSA {
 
 	private static final BigInteger NUM_1 = new BigInteger("1");
 
+	//LEMBRAR DE ADICIONAR AS LETRAS K E W
 	private static final String[] CARACTERES = { "A", "B", "C", "D", "E", "F",
 			"G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
 			"U", "V", "W", "X", "Y", "Z"};
@@ -19,6 +20,7 @@ public class RSA {
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
+		System.out.print("Digite a mensagem: ");
 		String plainText = sc.next();
 		
 		Map<String, BigInteger> NumLetra = geraTabela();
@@ -32,11 +34,11 @@ public class RSA {
 		int mdc = calculaMdc(resultadoTotiente);
 
 		// Prints
-		System.out.println(NumLetra.get("T"));
+		/*System.out.println(NumLetra.get("T"));
 		System.out.println("Tamanho do conjunto: " + tamanhoConjunto);
 		System.out.println("Totiente: " + resultadoTotiente);
 		System.out.println("MDC: " + mdc);
-
+*/
 		BigInteger[] cipherText = new BigInteger[plainText.length()];
 		String letra;
 		for (int i = 0; i < plainText.length(); i++) {
@@ -45,8 +47,9 @@ public class RSA {
 			cipherText[i] = (new BigInteger(""+NumLetra.get(letra)).pow(mdc)).mod(tamanhoConjunto);
 		}
 		
+		System.out.print("Mensagem criptografada: ");
 		for (BigInteger bigInteger : cipherText) {
-			System.out.println(bigInteger);
+			System.out.print(bigInteger+" ");
 		}
 		
 	}
