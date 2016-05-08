@@ -5,53 +5,97 @@ import java.math.*;
 
 public class RSA {
 
-	/*
-	 * Co-primos ou Números primos entre si Dois números são primos entre si
-	 * quando o Máximo Divisor Comum (MDC) entre eles é 1.
-	 */
-
 	private static final BigInteger NUM_1 = new BigInteger("1");
 
-	//LEMBRAR DE ADICIONAR AS LETRAS K E W
+	//TODO ADICIONAR A LETRA K
 	private static final String[] CARACTERES = { "A", "B", "C", "D", "E", "F",
-			"G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
-			"U", "V", "W", "X", "Y", "Z"};
+		"G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+		"U", "V", "W", "X", "Y", "Z"};
+
+	private static final Map<String, BigInteger> TBL_LETRA_NUM = geraTabelaLetraNum();
+	private static final Map<BigInteger, String> TBL_NUM_LETRA = geraTabelaNumLetra();
 
 	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Digite a mensagem: ");
-		String plainText = sc.next();
-		
-		Map<String, BigInteger> NumLetra = geraTabela();
 
-		// Variáveis do tipo BigInteger
-		BigInteger primeiroPrimo = new BigInteger("17");
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Digite a mensagem a ser criptografada: ");
+		String plainText = sc.nextLine();
+		sc.close();
+       
+		//TODO Implementar o loop para percorrer array com mais de um elemento
+        String strArray[] = plainText.split(" ");
+        
+        for(int i=0; i < strArray.length; i++){
+                System.out.println(strArray[i]);
+        }
+		
+		// Variaveis do tipo BigInteger
+		BigInteger primeiroPrimo = new BigInteger("13");
 		BigInteger segundoPrimo = new BigInteger("41");
 		BigInteger tamanhoConjunto = primeiroPrimo.multiply(segundoPrimo);
 		BigInteger resultadoTotiente = totiente(primeiroPrimo, segundoPrimo);
 
-		int mdc = calculaMdc(resultadoTotiente);
+		int mdc = calculaMdc(resultadoTotiente);		
+		int inverso = modularInverso(resultadoTotiente, mdc);
 
-		// Prints
-		/*System.out.println(NumLetra.get("T"));
-		System.out.println("Tamanho do conjunto: " + tamanhoConjunto);
-		System.out.println("Totiente: " + resultadoTotiente);
-		System.out.println("MDC: " + mdc);
-*/
 		BigInteger[] cipherText = new BigInteger[plainText.length()];
 		String letra;
 		for (int i = 0; i < plainText.length(); i++) {
 			letra = plainText.substring(i, i+1).toUpperCase();
-			//System.out.println(Math.pow(NumLetra.get(letra), mdc));
-			cipherText[i] = (new BigInteger(""+NumLetra.get(letra)).pow(mdc)).mod(tamanhoConjunto);
+			cipherText[i] = (new BigInteger(""+TBL_LETRA_NUM.get(letra)).pow(mdc)).mod(tamanhoConjunto);
 		}
-		
-		System.out.print("Mensagem criptografada: ");
+
+		System.out.print("criptografia chave p�blica: ");
 		for (BigInteger bigInteger : cipherText) {
 			System.out.print(bigInteger+" ");
+		}		
+
+		BigInteger[] msgDescriptografada = new BigInteger[plainText.length()];
+		for (int i = 0; i < cipherText.length; i++) {
+			msgDescriptografada[i] = (cipherText[i].pow(inverso).mod(tamanhoConjunto));
 		}
-		
+
+		System.out.print("\ndescriptografia chave privada: ");
+		for (BigInteger bigInteger : msgDescriptografada) {
+			System.out.print(bigInteger+" ");
+		}
+
+		System.out.print("\nMensagem descriptografada: ");
+		for (int i = 0; i < msgDescriptografada.length; i++) {
+			System.out.print(TBL_NUM_LETRA.get(new BigInteger(""+msgDescriptografada[i])));
+		}		
+	}
+
+	public static Map<String, BigInteger> geraTabelaLetraNum() {
+		Map<String, BigInteger> hashLetraNum = new HashMap<String, BigInteger>();
+
+		int i = 1;
+
+		for (String caracter : CARACTERES) {
+			hashLetraNum.put(caracter, new BigInteger(""+i));
+			i++;
+		}
+
+		return hashLetraNum;
+	}
+
+	public static Map<BigInteger, String> geraTabelaNumLetra() {
+		Map<BigInteger, String> hashNumLetra = new HashMap<BigInteger, String>();
+
+		int i = 1;
+
+		for (String caracter : CARACTERES) {
+			hashNumLetra.put(new BigInteger(""+i), caracter);
+			i++;
+		}
+
+		return hashNumLetra;
+	}
+
+	private static int modularInverso(BigInteger resultadoTotiente, int mdc) {
+		BigInteger result = new BigInteger(""+mdc);
+		result = result.modInverse(resultadoTotiente);
+		return result.intValue();		
 	}
 
 	private static int calculaMdc(BigInteger resultadoTotiente) {
@@ -69,19 +113,5 @@ public class RSA {
 	public static BigInteger totiente(BigInteger primeiro, BigInteger segundo) {
 		// BigInteger num1 = new BigInteger("1");
 		return (primeiro.subtract(NUM_1)).multiply((segundo.subtract(NUM_1)));
-	}
-
-	// Função para gerar a tabela de relação Número-Caracter
-	public static Map<String, BigInteger> geraTabela() {
-		Map<String, BigInteger> hashNumLetra = new HashMap<String, BigInteger>();
-
-		int i = 1;
-
-		for (String caracter : CARACTERES) {
-			hashNumLetra.put(caracter, new BigInteger(""+i));
-			i++;
-		}
-
-		return hashNumLetra;
 	}
 }
