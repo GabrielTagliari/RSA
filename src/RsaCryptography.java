@@ -25,8 +25,8 @@ public class RsaCryptography {
        
 		
 		// Variaveis do tipo BigInteger
-		BigInteger p = new BigInteger("5");
-		BigInteger q = new BigInteger("7");
+		BigInteger p = new BigInteger("3");
+		BigInteger q = new BigInteger("11");
 		BigInteger n = p.multiply(q);
 
 		int e = calculaMdc(n);		
@@ -111,8 +111,8 @@ public class RsaCryptography {
 		BigInteger ed = new BigInteger(""+e).multiply(new BigInteger(""+d)); 
 		System.out.println("ed: "+ed);
 		while(!ed.mod(n).equals(NUM_1)){
-			ed = new BigInteger(""+e).multiply(new BigInteger(""+d));
 			d++;
+			ed = new BigInteger(""+e).multiply(new BigInteger(""+d));
 		}
 		
 		return d;
