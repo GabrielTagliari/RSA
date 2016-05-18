@@ -19,31 +19,48 @@ public class RsaCryptography {
 
 		Scanner sc = new Scanner(System.in);
 		System.out.print("Digite a mensagem a ser criptografada: ");
-		BigInteger a = sc.nextBigInteger();
+		String a = sc.nextLine();
 		//String plainText = sc.nextLine();
 		sc.close();
        
 		
 		// Variaveis do tipo BigInteger
-		BigInteger p = new BigInteger("3");
-		BigInteger q = new BigInteger("11");
+		BigInteger p = new BigInteger("5");
+		BigInteger q = new BigInteger("7");
 		BigInteger n = p.multiply(q);
 
 		int e = calculaMdc(n);		
-		int d = findD(p,q,e);
+		int d = calculaD(p,q,e);
 		BigInteger b = new BigInteger("0");
 		
-		System.out.println(e);
-		System.out.println(d);
-		System.out.println("acabou");
+		String strArray[] = a.split(" ");
+		BigInteger textoCriptografado[] = new BigInteger[strArray.length]; 
+        
+		System.out.print("Texto Criptografado: ");
+        for (int i=0; i<strArray.length;i++) {
+        	b = new BigInteger(strArray[i]).pow(e).mod(n);
+        	textoCriptografado[i] = b;
+        	System.out.print(b+" ");
+		}
+        
+		System.out.println();
+        System.out.print("Texto Descriptografado: ");
+        for (BigInteger bigInteger : textoCriptografado) {
+			System.out.print(bigInteger.pow(d).mod(n)+" ");
+		}
+        
+        System.out.println();
+        System.out.println(d);
+        System.out.println(e);
+		/*b = a.pow(e).mod(n);
 		
-		b = a.pow(e).mod(n);
+		System.out.println(b);*/
 		
-		System.out.println(b);
 		
-		BigInteger a2 = b.pow(d).mod(n);
 		
-		System.out.println(a2);
+		/*BigInteger a2 = b.pow(d).mod(n);
+		
+		System.out.println(a2);*/
 
 		/*BigInteger[] cipherText = new BigInteger[plainText.length()];
 		String letra;
@@ -73,16 +90,29 @@ public class RsaCryptography {
 		}*/		
 	}
 
-	private static int findD(BigInteger p, BigInteger q, int e) {
-		int d = 3;
-		BigInteger n1 = p.subtract(new BigInteger("1")); 
+	private static int calculaMdc(BigInteger n) {
+		int num = 7;
+		BigInteger mdc = n.gcd(new BigInteger(""+num));
+		while (!mdc.equals(NUM_1)) {
+			mdc = n.gcd(new BigInteger(""+num));
+			num++;
+		}
+		return 7;
+	}
+	//TODO problema aqui
+	private static int calculaD(BigInteger p, BigInteger q, int e) {
+		int d = 1;		
+		BigInteger n1 = p.subtract(new BigInteger("1"));
+		System.out.println(n1);
 		BigInteger n2 = q.subtract(new BigInteger("1"));
+		System.out.println(n2);
 		BigInteger n = n1.multiply(n2);
+		System.out.println(n);
 		BigInteger ed = new BigInteger(""+e).multiply(new BigInteger(""+d)); 
-		if (ed.mod(n).equals(NUM_1)) {
-			System.out.println("é igual a 1");
-		} else {
-			System.out.println("não é igual a 1");
+		System.out.println("ed: "+ed);
+		while(!ed.mod(n).equals(NUM_1)){
+			ed = new BigInteger(""+e).multiply(new BigInteger(""+d));
+			d++;
 		}
 		
 		return d;
@@ -112,16 +142,5 @@ public class RsaCryptography {
 		}
 
 		return hashNumLetra;
-	}
-
-	private static int calculaMdc(BigInteger n) {
-		int num = 7;
-		BigInteger mdc = n.gcd(new BigInteger(""+num));
-		while (!mdc.equals(NUM_1)) {
-			mdc = n.gcd(new BigInteger(""+num));
-			System.out.println(num);
-			num++;
-		}
-		return num;
 	}
 }
