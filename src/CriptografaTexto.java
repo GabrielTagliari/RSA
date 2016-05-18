@@ -3,7 +3,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.math.*;
 
-public class RSA {
+public class CriptografaTexto {
 
 	private static final BigInteger NUM_1 = new BigInteger("1");
 
@@ -22,13 +22,6 @@ public class RSA {
 		String plainText = sc.nextLine();
 		sc.close();
        
-		//TODO Implementar o loop para percorrer array com mais de um elemento
-        String strArray[] = plainText.split(" ");
-        
-        for(int i=0; i < strArray.length; i++){
-                System.out.println(strArray[i]);
-        }
-		
 		// Variaveis do tipo BigInteger
 		BigInteger primeiroPrimo = new BigInteger("13");
 		BigInteger segundoPrimo = new BigInteger("41");
@@ -111,7 +104,6 @@ public class RSA {
 
 	// calcula totiente
 	public static BigInteger totiente(BigInteger primeiro, BigInteger segundo) {
-		// BigInteger num1 = new BigInteger("1");
 		return (primeiro.subtract(NUM_1)).multiply((segundo.subtract(NUM_1)));
 	}
 }
