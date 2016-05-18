@@ -8,7 +8,7 @@ public class RsaCryptography {
 	private static final BigInteger NUM_1 = new BigInteger("1");
 
 	//TODO ADICIONAR A LETRA K
-	private static final String[] CARACTERES = { "A", "B", "C", "D", "E", "F",
+	private static final String[] CARACTERES = {"A", "B", "C", "D", "E", "F",
 		"G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
 		"U", "V", "W", "X", "Y", "Z"};
 
@@ -25,9 +25,9 @@ public class RsaCryptography {
        
 		
 		// Variaveis do tipo BigInteger
-		BigInteger p = new BigInteger("3");
-		BigInteger q = new BigInteger("11");
-		BigInteger n = p.multiply(q);
+		BigInteger p = new BigInteger("17");
+		BigInteger q = new BigInteger("41");
+		BigInteger n = p.multiply(q); //a entrada nao pode ser maior do que este numero.
 
 		int e = calculaMdc(n);		
 		int d = calculaD(p,q,e);
@@ -52,6 +52,7 @@ public class RsaCryptography {
         System.out.println();
         System.out.println(d);
         System.out.println(e);
+        
 		/*b = a.pow(e).mod(n);
 		
 		System.out.println(b);*/
